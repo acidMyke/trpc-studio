@@ -6,13 +6,24 @@ const t = initTRPC.create();
 const publicProcedure = t.procedure;
 const createTRPCRouter = t.router;
 
+export const fullnameSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+});
+export const arrayOfFullnameSchema = z.array(fullnameSchema);
+export const nestedFullNameSchema = z.object({
+  layerOne: z.object({ layerTwo: fullnameSchema }),
+});
+export const unionSchema = z.union([z.string(), fullnameSchema]);
+export const joinedSchema = fullnameSchema.and(z.object({ age: z.number() }));
+
 const appRouter = createTRPCRouter({
   ping: publicProcedure.query(async () => 'pong'),
   hello: publicProcedure
     .input(z.string())
     .query(async ({ input }) => `Hello ${input}`),
   greet: publicProcedure
-    .input(z.object({ firstName: z.string(), lastName: z.string() }))
+    .input(fullnameSchema)
     .query(async ({ input }) => `Hello ${input.firstName} ${input.lastName}`),
   mut: publicProcedure
     .input(z.object({ age: z.number() }))
