@@ -24,6 +24,16 @@ const appRouter = createTRPCRouter({
   meta: publicProcedure
     .meta({ trpcStudio: { info: 'hello trpcStudio' } })
     .query(async () => 'its meta not Meta'),
+  withOutput: publicProcedure
+    .output(z.object({ theOutputSchema: z.string() }))
+    .query(async () => ({ theOutputSchema: 'is defined' })),
+  customValidation: publicProcedure
+    .input(i => typeof i === 'string' && i.length > 3)
+    .query(async ({ input }) => `Hello ${input}`),
+  combinedInputs: publicProcedure
+    .input(z.object({ a: z.number() }))
+    .input(z.object({ b: z.number() }))
+    .query(async ({ input }) => input.a + input.b),
 });
 
 export type AppRouter = typeof appRouter;
