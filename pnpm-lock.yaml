@@ -21,8 +21,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       '@trpc/server':
-        specifier: ^10.45.2
-        version: 10.45.2
+        specifier: 11.0.0-rc.436
+        version: 11.0.0-rc.436
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
@@ -61,8 +61,8 @@ importers:
         specifier: ^1.11.5
         version: 1.11.5
       '@trpc/server':
-        specifier: ^10.45.2
-        version: 10.45.2
+        specifier: 11.0.0-rc.436
+        version: 11.0.0-rc.436
       cli-poc:
         specifier: workspace:cli-poc
         version: link:../cli-poc
@@ -75,7 +75,7 @@ importers:
     devDependencies:
       '@hono/trpc-server':
         specifier: ^0.3.2
-        version: 0.3.2(@trpc/server@10.45.2)(hono@4.4.10)
+        version: 0.3.2(@trpc/server@11.0.0-rc.436)(hono@4.4.10)
       '@types/node':
         specifier: ^20.11.17
         version: 20.14.9
@@ -89,8 +89,8 @@ importers:
         specifier: ^1.12.0
         version: 1.12.0
       '@trpc/server':
-        specifier: ^10.45.2
-        version: 10.45.2
+        specifier: 11.0.0-rc.436
+        version: 11.0.0-rc.436
       consola:
         specifier: ^3.2.3
         version: 3.2.3
@@ -633,8 +633,8 @@ packages:
   '@rushstack/ts-command-line@4.22.0':
     resolution: {integrity: sha512-Qj28t6MO3HRgAZ72FDeFsrpdE6wBWxF3VENgvrXh7JF2qIT+CrXiOJIesW80VFZB9QwObSpkB1ilx794fGQg6g==}
 
-  '@trpc/server@10.45.2':
-    resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
+  '@trpc/server@11.0.0-rc.436':
+    resolution: {integrity: sha512-Nm6b010lb6DuUQTnn95zU+IppD8YnSk/NCrpcj8o8umj9Ap07s1AOZLUfJaZzlDQltC2UVuLpH+shArryypBLg==}
 
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
@@ -1516,9 +1516,9 @@ snapshots:
 
   '@hono/node-server@1.12.0': {}
 
-  '@hono/trpc-server@0.3.2(@trpc/server@10.45.2)(hono@4.4.10)':
+  '@hono/trpc-server@0.3.2(@trpc/server@11.0.0-rc.436)(hono@4.4.10)':
     dependencies:
-      '@trpc/server': 10.45.2
+      '@trpc/server': 11.0.0-rc.436
       hono: 4.4.10
 
   '@inquirer/checkbox@2.3.8':
@@ -1768,7 +1768,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@trpc/server@10.45.2': {}
+  '@trpc/server@11.0.0-rc.436': {}
 
   '@types/argparse@1.0.38': {}
 

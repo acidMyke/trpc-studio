@@ -24,7 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@inquirer/prompts": "^5.1.0",
-    "@trpc/server": "^10.45.2",
+    "@trpc/server": "11.0.0-rc.436",
     "joycon": "^3.1.1",
     "json5": "^2.2.3",
     "yargs": "^17.7.2",
