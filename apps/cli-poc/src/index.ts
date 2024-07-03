@@ -1,6 +1,7 @@
 import { register } from 'esbuild-register/dist/node.js';
 import type { Router as trpcRouter } from '@trpc/server';
 import { z } from 'zod';
+import path from 'path';
 
 export const configSchema = z.object({
   path: z.string(),
@@ -9,19 +10,21 @@ export const configSchema = z.object({
 export type Config = z.infer<typeof configSchema>;
 
 export async function main(config: Config) {
+  // Resolve path to an absolute path
+  config.path = path.resolve(config.path);
   console.log(`Building ${config.path}`);
   // Make sure to register esbuild so that we can import ts files on the fly
   let unregister: () => void = () => {};
   try {
-    const result = register({ format: 'esm', loader: 'ts' });
+    const result = register({ format: 'cjs', loader: 'ts' });
     unregister = result.unregister;
   } catch (error) {
     console.error('Error while registering esbuild:', error);
     throw error;
   }
 
-  // Scan all the exports of the files
-  const app = await import(config.path);
+  // Scan all the exports of the files, for unknown reason es6 import doesn't work so have to use require T-T
+  const app = require(config.path);
   const routers: Map<string, trpcRouter<any>> = new Map();
   // Check default export first
   for (const key in app) {
