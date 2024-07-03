@@ -1,16 +1,20 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { findAppRouter } from './utils/trpc';
+import { Config } from './config';
 
-const app = new Hono();
+export async function startStudio(args: Config) {}
 
-app.get('/', c => {
-  return c.text('Hello Hono!');
-});
+// const app = new Hono();
 
-const port = 3000;
-console.log(`Server is running on port ${port}`);
+// app.get('/', c => {
+//   return c.text('Hello Hono!');
+// });
 
-serve({
-  fetch: app.fetch,
-  port,
-});
+// const port = 3000;
+// console.log(`Server is running on port ${port}`);
+
+// serve({
+//   fetch: app.fetch,
+//   port,
+// });

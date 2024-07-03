@@ -30,7 +30,7 @@ export const configSchema = z.object({
 
 export type Config = z.infer<typeof configSchema>;
 
-async function parseConfigurationFile(): Promise<Partial<Config>> {
+export async function parseConfigurationFile(): Promise<Partial<Config>> {
   const { path, data } = await joycon.load();
   consola.info(`Loaded configuration from ${path}`);
   return configSchema.partial().safeParse(data).data ?? {};
