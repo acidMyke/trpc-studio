@@ -16,7 +16,7 @@ tRPC Studio is a tool that provides a simple web interface to run tRPC procedure
 
 ## Planned Roadmap (MVP)
 
-- [ ] Simple proof of concept with CLI
+- [x] Simple proof of concept with CLI
 - [ ] Web interface to run procedures
 - [ ] Generate forms according to procedure input schema
 
