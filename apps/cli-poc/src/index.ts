@@ -2,17 +2,41 @@ import { register } from 'esbuild-register/dist/node.js';
 import type { Router as trpcRouter } from '@trpc/server';
 import { z } from 'zod';
 import path from 'path';
+import { stat } from 'fs/promises';
 
 export const configSchema = z.object({
   path: z.string(),
+  endpoint: z
+    .string()
+    .url()
+    .refine(
+      url => url.startsWith('http') || url.startsWith('https'),
+      "Endpoint must start with 'http' or 'https'"
+    )
+    .refine(
+      url => url.endsWith('/'),
+      "Endpoint must end with '/' as the path.to.procedure is appended to it"
+    ),
 });
 
 export type Config = z.infer<typeof configSchema>;
 
 export async function main(config: Config) {
+  const appRouter = await getAppRouter(config.path);
+}
+
+export async function getAppRouter(routerPath: string) {
   // Resolve path to an absolute path
-  config.path = path.resolve(config.path);
-  console.log(`Building ${config.path}`);
+  routerPath = path.resolve(routerPath);
+  // Check if the file exists
+  try {
+    await stat(routerPath);
+  } catch (error) {
+    console.error(`File ${routerPath} doesn't exist`);
+    throw error;
+  }
+
+  console.log('Registering esbuild');
   // Make sure to register esbuild so that we can import ts files on the fly
   let unregister: () => void = () => {};
   try {
@@ -23,8 +47,9 @@ export async function main(config: Config) {
     throw error;
   }
 
+  console.log(`Importing ${routerPath}`);
   // Scan all the exports of the files, for unknown reason es6 import doesn't work so have to use require T-T
-  const app = require(config.path);
+  const app = require(routerPath);
   const routers: Map<string, trpcRouter<any>> = new Map();
   // Check default export first
   for (const key in app) {
@@ -38,13 +63,13 @@ export async function main(config: Config) {
   // Unregister esbuild
   unregister();
   console.log(
-    `Found ${routers.size} routers in ${config.path}: ${Array.from(
+    `Found ${routers.size} routers in ${routerPath}: ${Array.from(
       routers.keys()
     )}`
   );
 
   if (routers.size === 0) {
-    throw new Error(`No routers found in ${config.path}`);
+    throw new Error(`No routers found in ${routerPath}`);
   }
 
   // Default to the first router
@@ -65,6 +90,8 @@ export async function main(config: Config) {
   console.log(
     `Router has ${Object.keys(appRouter._def.procedures).length} procedures`
   );
+
+  return appRouter;
 }
 
 function isTRPCRouter(router: any): router is trpcRouter<any> {

@@ -10,6 +10,12 @@ const args = yargs(hideBin(process.argv))
     description: 'Path to the file to scan for tRPC routers',
     demandOption: true,
   })
+  .option('endpoint', {
+    alias: 'e',
+    type: 'string',
+    description: 'Endpoint to the server handling the trpc requests',
+    demandOption: true,
+  })
   .help().argv;
 
 const { success, data, error } = configSchema.safeParse(args);
