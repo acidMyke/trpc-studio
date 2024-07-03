@@ -63,6 +63,9 @@ importers:
       '@trpc/server':
         specifier: ^10.45.2
         version: 10.45.2
+      cli-poc:
+        specifier: workspace:cli-poc
+        version: link:../cli-poc
       hono:
         specifier: ^4.4.10
         version: 4.4.10

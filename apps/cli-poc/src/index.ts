@@ -1,4 +1,4 @@
-import { register } from 'esbuild-register';
+import { register } from 'esbuild-register/dist/node.js';
 import type { Router as trpcRouter } from '@trpc/server';
 import { z } from 'zod';
 
