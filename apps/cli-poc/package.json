@@ -27,10 +27,13 @@
     "@trpc/server": "^10.45.2",
     "joycon": "^3.1.1",
     "json5": "^2.2.3",
+    "yargs": "^17.7.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.47.0",
+    "esbuild": "^0.23.0",
+    "esbuild-register": "^3.5.0",
     "tsup": "^8.1.0"
   }
 }
