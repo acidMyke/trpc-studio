@@ -4,15 +4,16 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 const args = yargs(hideBin(process.argv))
-  .option('path', {
+  .option('routerPath', {
     alias: 'p',
     type: 'string',
-    description: 'Path to the file to scan for tRPC routers',
+    description:
+      'Path to the file to import tRPC router from, only the router with the most procedures will be used',
   })
-  .option('endpoint', {
+  .option('trpcEndpoint', {
     alias: 'e',
     type: 'string',
-    description: 'Endpoint to the server handling the trpc requests',
+    description: 'Endpoint that handle the trpc requests',
   })
   .help().argv;
 

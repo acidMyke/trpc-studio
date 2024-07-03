@@ -1,13 +1,9 @@
 import { register } from 'esbuild-register/dist/node.js';
-import type {
-  Router as trpcRouter,
-  ProcedureRouterRecord,
-  AnyProcedure,
-} from '@trpc/server';
-import { stat } from 'fs/promises';
+import type { Router as trpcRouter } from '@trpc/server';
+import consola from 'consola';
 
-export async function getAppRouter(routerAbsPath: string) {
-  console.log('Registering esbuild');
+export async function findAppRouter(routerAbsPath: string) {
+  consola.verbose('Registering esbuild');
   // Make sure to register esbuild so that we can import ts files on the fly
   let unregister: () => void = () => {};
   try {
@@ -18,13 +14,13 @@ export async function getAppRouter(routerAbsPath: string) {
     throw error;
   }
 
-  console.log(`Importing ${routerAbsPath}`);
+  consola.verbose(`Importing ${routerAbsPath}`);
   // Scan all the exports of the files, for unknown reason es6 import doesn't work so have to use require T-T
   const app = require(routerAbsPath);
   const routers: Map<string, trpcRouter<any>> = new Map();
   // Check default export first
   for (const key in app) {
-    console.log('Detected export:', key);
+    consola.verbose('Detected export:', key);
     // Check if the export is tRPC Router
     if (isTRPCRouter(app[key])) {
       routers.set(key, app[key]);
@@ -33,7 +29,7 @@ export async function getAppRouter(routerAbsPath: string) {
 
   // Unregister esbuild
   unregister();
-  console.log(
+  consola.verbose(
     `Found ${routers.size} routers in ${routerAbsPath}: ${Array.from(
       routers.keys()
     )}`
@@ -58,7 +54,7 @@ export async function getAppRouter(routerAbsPath: string) {
     }
   }
 
-  console.log(
+  consola.info(
     `Router has ${Object.keys(appRouter._def.procedures).length} procedures`
   );
 
