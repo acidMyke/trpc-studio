@@ -1,8 +1,31 @@
 import { register } from 'esbuild-register/dist/node.js';
-import type { Router as trpcRouter } from '@trpc/server';
+import type {
+  Router,
+  AnyRootTypes,
+  ProcedureType,
+  RouterRecord,
+} from '@trpc/server/unstable-core-do-not-import';
 import consola from 'consola';
+import { ZodFirstPartySchemaTypes } from 'zod';
 
-export async function findAppRouter(routerAbsPath: string) {
+// The types below are inspected from the tRPC Router and Procedure objects
+// They are not directly imported from tRPC because its somewhat different
+export interface Procedure {
+  _def: {
+    meta: undefined | Record<string, any>;
+    inputs: never[] | [Function] | ZodFirstPartySchemaTypes[];
+    output?: undefined | Function | ZodFirstPartySchemaTypes;
+    type: ProcedureType;
+  };
+  (opts: any): Promise<any>;
+}
+
+type ProcedureRecord = Record<string, Procedure> & RouterRecord;
+// Add RouterRecord here so that typescript doesn't complain
+
+type AppRouter = Router<AnyRootTypes, ProcedureRecord>;
+
+export async function findAppRouter(routerAbsPath: string): Promise<AppRouter> {
   consola.verbose('Registering esbuild');
   // Make sure to register esbuild so that we can import ts files on the fly
   let unregister: () => void = () => {};
@@ -17,7 +40,7 @@ export async function findAppRouter(routerAbsPath: string) {
   consola.verbose(`Importing ${routerAbsPath}`);
   // Scan all the exports of the files, for unknown reason es6 import doesn't work so have to use require T-T
   const app = require(routerAbsPath);
-  const routers: Map<string, trpcRouter<any>> = new Map();
+  const routers: Map<string, AppRouter> = new Map();
   // Check default export first
   for (const key in app) {
     consola.verbose('Detected export:', key);
@@ -40,7 +63,7 @@ export async function findAppRouter(routerAbsPath: string) {
   }
 
   // Default to the first router
-  let appRouter: trpcRouter<any> = routers.values().next().value;
+  let appRouter: AppRouter = routers.values().next().value;
 
   if (routers.size > 1) {
     // If there are multiple routers exported, find the one with the most procedures
@@ -80,7 +103,7 @@ export function getProcedureType(procedure: any) {
   }
 }
 
-function isTRPCRouter(router: any): router is trpcRouter<any> {
+function isTRPCRouter(router: any): router is AppRouter {
   // router is a TRPC Router if it has a _def property, and _def has a router property set to true
   if (typeof router !== 'object') {
     return false;
