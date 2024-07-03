@@ -1,10 +1,12 @@
 import { register } from 'esbuild-register';
 import type { Router as trpcRouter } from '@trpc/server';
+import { z } from 'zod';
 
-export interface Config {
-  /** The path to the typescript file that contain the appRouter */
-  path: string;
-}
+export const configSchema = z.object({
+  path: z.string(),
+});
+
+export type Config = z.infer<typeof configSchema>;
 
 export async function main(config: Config) {
   console.log(`Building ${config.path}`);

@@ -32,6 +32,8 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.47.0",
+    "@types/node": "^20.11.17",
+    "@types/yargs": "^17.0.32",
     "esbuild": "^0.23.0",
     "esbuild-register": "^3.5.0",
     "tsup": "^8.1.0"

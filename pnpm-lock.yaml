@@ -39,6 +39,12 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.47.0
         version: 7.47.0(@types/node@20.14.9)
+      '@types/node':
+        specifier: ^20.11.17
+        version: 20.14.9
+      '@types/yargs':
+        specifier: ^17.0.32
+        version: 17.0.32
       esbuild:
         specifier: ^0.23.0
         version: 0.23.0
@@ -591,6 +597,12 @@ packages:
 
   '@types/wrap-ansi@3.0.0':
     resolution: {integrity: sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==}
+
+  '@types/yargs-parser@21.0.3':
+    resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
+
+  '@types/yargs@17.0.32':
+    resolution: {integrity: sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==}
 
   ajv-draft-04@1.0.0:
     resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
@@ -1708,6 +1720,12 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/wrap-ansi@3.0.0': {}
+
+  '@types/yargs-parser@21.0.3': {}
+
+  '@types/yargs@17.0.32':
+    dependencies:
+      '@types/yargs-parser': 21.0.3
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
     optionalDependencies:
