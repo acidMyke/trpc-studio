@@ -13,9 +13,8 @@ export const configSchema = z.object({
       url => url.startsWith('http') || url.startsWith('https'),
       "Endpoint must start with 'http' or 'https'"
     )
-    .refine(
-      url => url.endsWith('/'),
-      "Endpoint must end with '/' as the path.to.procedure is appended to it"
+    .transform(endpoint =>
+      endpoint.endsWith('/') ? endpoint : `${endpoint}/`
     ),
 });
 
