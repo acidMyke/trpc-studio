@@ -19,23 +19,13 @@ const args = yargs(hideBin(process.argv))
   })
   .help().argv;
 
-const configFromFile = await parseConfigurationFile();
-// Combine the configuration from the file and the arguments, arguments will override the file
-const config = configSchema.safeParse({ ...configFromFile, ...args });
-if (!config.success) {
-  console.error('Invalid arguments:', config.error);
-  process.exit(1);
-}
+parseConfigurationFile().then(configFromFile => {
+  // Combine the configuration from the file and the arguments, arguments will override the file
+  const config = configSchema.safeParse({ ...configFromFile, ...args });
+  if (!config.success) {
+    console.error('Invalid arguments:', config.error);
+    process.exit(1);
+  }
 
-await startStudio(config.data);
-
-// const { success, data, error } = configSchema.safeParse(args);
-// if (!success) {
-//   console.error('Invalid arguments:', error);
-//   process.exit(1);
-// }
-
-// main(data).catch(error => {
-//   console.error('Error while scanning the file:', error);
-//   process.exit(1);
-// });
+  return startStudio(config.data);
+});
