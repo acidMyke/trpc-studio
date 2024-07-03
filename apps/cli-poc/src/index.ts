@@ -1,27 +1,47 @@
 import { register } from 'esbuild-register/dist/node.js';
-import type { Router as trpcRouter } from '@trpc/server';
-import { z } from 'zod';
+import type {
+  Router as trpcRouter,
+  ProcedureRouterRecord,
+  AnyProcedure,
+} from '@trpc/server';
+import {
+  AnyZodObject,
+  ZodAny,
+  ZodFirstPartySchemaTypes,
+  ZodObject,
+  z,
+} from 'zod';
 import path from 'path';
 import { stat } from 'fs/promises';
 
 export const configSchema = z.object({
   path: z.string(),
-  endpoint: z
-    .string()
-    .url()
-    .refine(
-      url => url.startsWith('http') || url.startsWith('https'),
-      "Endpoint must start with 'http' or 'https'"
-    )
-    .transform(endpoint =>
-      endpoint.endsWith('/') ? endpoint : `${endpoint}/`
-    ),
+  // endpoint: z
+  //   .string()
+  //   .url()
+  //   .refine(
+  //     url => url.startsWith('http') || url.startsWith('https'),
+  //     "Endpoint must start with 'http' or 'https'"
+  //   )
+  //   .transform(endpoint =>
+  //     endpoint.endsWith('/') ? endpoint : `${endpoint}/`
+  //   ),
 });
 
 export type Config = z.infer<typeof configSchema>;
 
 export async function main(config: Config) {
   const appRouter = await getAppRouter(config.path);
+
+  // Get Procedures
+  const procedures = appRouter._def.procedures as Record<string, AnyProcedure>;
+  // List all the procedures and their types
+  for (const [path, procedure] of Object.entries(procedures)) {
+    const type = getProcedureType(procedure);
+    const prefix =
+      type === 'query' ? 'Q: ' : type === 'mutation' ? 'M: ' : '?:';
+    console.log(`${prefix} ${path}`);
+  }
 }
 
 export async function getAppRouter(routerPath: string) {
@@ -91,6 +111,25 @@ export async function getAppRouter(routerPath: string) {
   );
 
   return appRouter;
+}
+
+function getProcedureType(procedure: any) {
+  // Check if the procedure is a TRPC Procedure
+  if (!('_def' in procedure)) {
+    return null;
+  }
+  if (typeof procedure._def !== 'object') {
+    return null;
+  }
+  if ('query' in procedure._def && procedure._def.query === true) {
+    return 'query';
+  } else if ('mutation' in procedure._def && procedure._def.mutation === true) {
+    return 'mutation';
+  }
+  // TODO: Add support for subscription
+  else {
+    return null;
+  }
 }
 
 function isTRPCRouter(router: any): router is trpcRouter<any> {
