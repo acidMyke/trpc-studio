@@ -8,13 +8,16 @@ import {
   ZodStringCheck,
 } from 'zod';
 import { mapValues } from 'remeda';
+import consola from 'consola';
 
 type ValueAndMessage<V> = { value: V; message?: string };
-interface SlimedResult {
-  typeName: Exclude<
-    ZodFirstPartyTypeKind,
-    'ZodFunction' | 'ZodLazy' | 'ZodPromise' | 'ZodBranded'
-  >;
+export interface SlimedResult {
+  typeName:
+    | Exclude<
+        ZodFirstPartyTypeKind,
+        'ZodFunction' | 'ZodLazy' | 'ZodPromise' | 'ZodBranded'
+      >
+    | 'StudioUnsupportedType';
 
   checks?: (ZodStringCheck | ZodNumberCheck | ZodBigIntCheck | ZodDateCheck)[]; // string, number, bigint, date
   coerce?: boolean; // string, number, bigint, boolean, date
@@ -51,9 +54,7 @@ interface SlimedResult {
   // out?: SlimedResult; // pipeline? (not useful for us)
 }
 
-export function slimZod(
-  schema: ZodFirstPartySchemaTypes
-): SlimedResult | undefined {
+export function slimZod(schema: ZodFirstPartySchemaTypes): SlimedResult {
   // Recursively get the metadata only
   const def = schema._def;
 
@@ -63,7 +64,8 @@ export function slimZod(
     def.typeName === 'ZodPromise' ||
     def.typeName === 'ZodBranded'
   ) {
-    throw new Error('Unsupported type: These types cannot be serialized');
+    consola.warn(`Unsupported type: ${def.typeName}`);
+    return { typeName: 'StudioUnsupportedType' };
   }
 
   const result: SlimedResult = { typeName: def.typeName };
