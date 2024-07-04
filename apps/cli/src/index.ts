@@ -1,19 +1,8 @@
-import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
 import { Procedure, findAppRouter } from './utils/trpc';
 import { Config } from './config';
-import { resolve as resovlePath } from 'path';
-import { stat as fsStat } from 'fs/promises';
 
 export async function startStudio(args: Config) {
-  // Ensure path in args is absolute, and file exists
-  const routerPath = resovlePath(args.routerPath);
-  try {
-    await fsStat(routerPath);
-  } catch (error) {
-    console.error('Invalid router path:', error);
-    process.exit(1);
-  }
+  const { routerPath } = args;
   // Find the app router in the file
   const appRouter = await findAppRouter(routerPath);
   const procedureInfos: Map<string, ReturnType<typeof extractInfo>> = new Map();
