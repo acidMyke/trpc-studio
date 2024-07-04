@@ -1,7 +1,6 @@
 {
   "name": "trpc-studio",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -9,7 +8,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "watch:build": "tsup --watch"
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "@hono/node-server": "^1.12.0",

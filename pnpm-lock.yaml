@@ -15,6 +15,52 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
+  apps/cli:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.12.0
+        version: 1.12.0
+      '@trpc/server':
+        specifier: 11.0.0-rc.436
+        version: 11.0.0-rc.436
+      consola:
+        specifier: ^3.2.3
+        version: 3.2.3
+      hono:
+        specifier: ^4.4.11
+        version: 4.4.11
+      joycon:
+        specifier: ^3.1.1
+        version: 3.1.1
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+      yargs:
+        specifier: ^17.7.2
+        version: 17.7.2
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
+      '@types/node':
+        specifier: ^20.14.9
+        version: 20.14.9
+      '@types/yargs':
+        specifier: ^17.0.32
+        version: 17.0.32
+      esbuild:
+        specifier: ^0.23.0
+        version: 0.23.0
+      esbuild-register:
+        specifier: ^3.5.0
+        version: 3.5.0(esbuild@0.23.0)
+      tsup:
+        specifier: ^8.1.0
+        version: 8.1.0(@microsoft/api-extractor@7.47.0(@types/node@20.14.9))(typescript@5.5.3)
+      tsx:
+        specifier: ^4.7.1
+        version: 4.16.0
+
   apps/cli-poc:
     dependencies:
       '@inquirer/prompts':
@@ -63,12 +109,12 @@ importers:
       '@trpc/server':
         specifier: 11.0.0-rc.436
         version: 11.0.0-rc.436
-      cli-poc:
-        specifier: workspace:cli-poc
-        version: link:../cli-poc
       hono:
         specifier: ^4.4.10
         version: 4.4.10
+      trpc-studio:
+        specifier: workspace:trpc-studio
+        version: link:../cli
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -79,52 +125,6 @@ importers:
       '@types/node':
         specifier: ^20.11.17
         version: 20.14.9
-      tsx:
-        specifier: ^4.7.1
-        version: 4.16.0
-
-  apps/trpc-studio:
-    dependencies:
-      '@hono/node-server':
-        specifier: ^1.12.0
-        version: 1.12.0
-      '@trpc/server':
-        specifier: 11.0.0-rc.436
-        version: 11.0.0-rc.436
-      consola:
-        specifier: ^3.2.3
-        version: 3.2.3
-      hono:
-        specifier: ^4.4.11
-        version: 4.4.11
-      joycon:
-        specifier: ^3.1.1
-        version: 3.1.1
-      json5:
-        specifier: ^2.2.3
-        version: 2.2.3
-      yargs:
-        specifier: ^17.7.2
-        version: 17.7.2
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
-    devDependencies:
-      '@types/node':
-        specifier: ^20.14.9
-        version: 20.14.9
-      '@types/yargs':
-        specifier: ^17.0.32
-        version: 17.0.32
-      esbuild:
-        specifier: ^0.23.0
-        version: 0.23.0
-      esbuild-register:
-        specifier: ^3.5.0
-        version: 3.5.0(esbuild@0.23.0)
-      tsup:
-        specifier: ^8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.47.0(@types/node@20.14.9))(typescript@5.5.3)
       tsx:
         specifier: ^4.7.1
         version: 4.16.0
