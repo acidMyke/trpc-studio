@@ -1,6 +1,8 @@
 import { extractInfo, findAppRouter } from './utils/trpc';
 import { Config } from './config';
 import consola from 'consola';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
 
 export async function startStudio(args: Config) {
   const { routerPath } = args;
@@ -13,19 +15,27 @@ export async function startStudio(args: Config) {
   }
   consola.info(`Found ${procedureInfos.size} procedures`);
 
-  //TODO: Start Hono Server
+  //Start Hono Server
+
+  const hono = new Hono();
+
+  const apiPath = hono.basePath('/api');
+
+  apiPath.get('/procedures', c => {
+    return c.json(Array.from(procedureInfos.keys()));
+  });
+
+  apiPath.get('/procedures/:procedure', c => {
+    return c.json(procedureInfos.get(c.req.param('procedure')));
+  });
+
+  serve(
+    {
+      fetch: hono.fetch,
+      port: 2348,
+    },
+    info => {
+      consola.info(`tRPC Studio serving on http://localhost:${info.port}`);
+    }
+  );
 }
-
-// const app = new Hono();
-
-// app.get('/', c => {
-//   return c.text('Hello Hono!');
-// });
-
-// const port = 3000;
-// console.log(`Server is running on port ${port}`);
-
-// serve({
-//   fetch: app.fetch,
-//   port,
-// });
