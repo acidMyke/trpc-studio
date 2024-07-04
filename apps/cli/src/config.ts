@@ -47,7 +47,7 @@ export const configSchema = z.object({
       "Endpoint must start with 'http' or 'https'"
     )
     .transform(endpoint =>
-      endpoint.endsWith('/') ? endpoint : `${endpoint}/`
+      endpoint.endsWith('/') ? endpoint.slice(0, -1) : endpoint
     ),
   verbose: z.boolean().optional(),
   debug: z.boolean().optional(),
