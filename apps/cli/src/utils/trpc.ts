@@ -6,7 +6,8 @@ import type {
   RouterRecord,
 } from '@trpc/server/unstable-core-do-not-import';
 import consola from 'consola';
-import { ZodFirstPartySchemaTypes } from 'zod';
+import { AnyZodObject, ZodFirstPartySchemaTypes, ZodType, z } from 'zod';
+import { slimZod } from './zod';
 
 // The types below are inspected from the tRPC Router and Procedure objects
 // They are not directly imported from tRPC because its somewhat different
@@ -84,23 +85,36 @@ export async function findAppRouter(routerAbsPath: string): Promise<AppRouter> {
   return appRouter;
 }
 
-export function getProcedureType(procedure: any) {
-  // Check if the procedure is a TRPC Procedure
-  if (!('_def' in procedure)) {
-    return null;
-  }
-  if (typeof procedure._def !== 'object') {
-    return null;
-  }
-  if ('query' in procedure._def && procedure._def.query === true) {
-    return 'query';
-  } else if ('mutation' in procedure._def && procedure._def.mutation === true) {
-    return 'mutation';
-  }
-  // TODO: Add support for subscription
-  else {
-    return null;
-  }
+export function extractInfo(path: string, procedure: Procedure) {
+  // Extract zod schemas from procedure
+  // Extract the schema info from Zod and make it serializable
+
+  // Process input schemas
+  const inputInfo =
+    procedure._def.inputs.length === 0
+      ? slimZod(z.never())
+      : typeof procedure._def.inputs[0] === 'function'
+      ? slimZod(z.unknown())
+      : procedure._def.inputs.length === 1
+      ? slimZod(procedure._def.inputs[0])
+      : slimZod(
+          (procedure._def.inputs as AnyZodObject[]).reduce((acc, schema) =>
+            schema.merge(acc)
+          )
+        );
+
+  const outputInfo =
+    procedure._def.output && procedure._def.output instanceof ZodType
+      ? slimZod(procedure._def.output)
+      : slimZod(z.unknown());
+
+  return {
+    path,
+    type: procedure._def.type,
+    meta: procedure._def.meta,
+    inputInfo,
+    outputInfo,
+  };
 }
 
 function isTRPCRouter(router: any): router is AppRouter {
