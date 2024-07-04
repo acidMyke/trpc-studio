@@ -4,10 +4,18 @@ import type {
   AnyRootTypes,
   ProcedureType,
   RouterRecord,
+  DataTransformerOptions,
 } from '@trpc/server/unstable-core-do-not-import';
 import consola from 'consola';
 import { AnyZodObject, ZodFirstPartySchemaTypes, ZodType, z } from 'zod';
 import { slimZod } from './zod';
+import {
+  createTRPCUntypedClient,
+  httpBatchLink,
+  httpLink,
+  loggerLink,
+  splitLink,
+} from '@trpc/client';
 
 // The types below are inspected from the tRPC Router and Procedure objects
 // They are not directly imported from tRPC because its somewhat different
@@ -135,4 +143,40 @@ function isTRPCRouter(router: any): router is AppRouter {
     return false;
   }
   return true;
+}
+
+interface createClientOptions {
+  url: string;
+  transformer?: DataTransformerOptions;
+  useBatching?: boolean;
+  methodOverride?: boolean;
+}
+
+export function createClient(opts: createClientOptions) {
+  const { url, transformer, useBatching, methodOverride } = opts;
+  const linkOpts:
+    | Parameters<typeof httpBatchLink>[0]
+    | Parameters<typeof httpLink>[0] = { url };
+
+  if (transformer) {
+    // @ts-ignore - trpc is too tight, i hope it works :]
+    linkOpts.transformer = transformer;
+  }
+
+  if (methodOverride) {
+    linkOpts.methodOverride = 'POST';
+  }
+
+  return createTRPCUntypedClient({
+    links: [
+      loggerLink({ console: consola }),
+      splitLink({
+        condition: () => !!useBatching,
+        // @ts-ignore - trpc is too tight, i hope it works :]
+        false: httpLink(linkOpts),
+        // @ts-ignore - trpc is too tight, i hope it works :]
+        true: httpBatchLink(linkOpts),
+      }),
+    ],
+  });
 }
