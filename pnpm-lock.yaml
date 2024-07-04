@@ -35,6 +35,9 @@ importers:
       json5:
         specifier: ^2.2.3
         version: 2.2.3
+      remeda:
+        specifier: ^2.3.0
+        version: 2.3.0
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
@@ -1190,6 +1193,9 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
+  remeda@2.3.0:
+    resolution: {integrity: sha512-J9djcCyFL9D1ZGnfiNJ6MMhcUT8BmNCT+dj2SApdrTNz+CxqW1dScPVaDCopivHTShiYXh4sRSPYKMzlGrgyQw==}
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -1394,6 +1400,10 @@ packages:
   type-fest@0.21.3:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
+
+  type-fest@4.21.0:
+    resolution: {integrity: sha512-ADn2w7hVPcK6w1I0uWnM//y1rLXZhzB9mr0a3OirzclKF1Wp6VzevUmzz/NRAWunOT6E8HrnpGY7xOfc6K57fA==}
+    engines: {node: '>=16'}
 
   typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
@@ -2399,6 +2409,10 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
+  remeda@2.3.0:
+    dependencies:
+      type-fest: 4.21.0
+
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
@@ -2597,6 +2611,8 @@ snapshots:
       turbo-windows-arm64: 2.0.6
 
   type-fest@0.21.3: {}
+
+  type-fest@4.21.0: {}
 
   typescript@5.4.2: {}
 
