@@ -8,4 +8,17 @@ export default defineConfig({
     alias: { '~': path.resolve(__dirname, './src') },
   },
   plugins: [react()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:2348',
+        changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    outDir: '../cli/dist/client',
+    assetsDir: '.',
+    emptyOutDir: true,
+  },
 });
