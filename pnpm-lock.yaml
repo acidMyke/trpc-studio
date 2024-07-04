@@ -20,9 +20,12 @@ importers:
       '@hono/node-server':
         specifier: ^1.12.0
         version: 1.12.0
+      '@trpc/client':
+        specifier: 11.0.0-rc.441
+        version: 11.0.0-rc.441(@trpc/server@11.0.0-rc.441)
       '@trpc/server':
-        specifier: 11.0.0-rc.436
-        version: 11.0.0-rc.436
+        specifier: 11.0.0-rc.441
+        version: 11.0.0-rc.441
       consola:
         specifier: ^3.2.3
         version: 3.2.3
@@ -38,6 +41,9 @@ importers:
       remeda:
         specifier: ^2.3.0
         version: 2.3.0
+      superjson:
+        specifier: ^2.2.1
+        version: 2.2.1
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
@@ -73,8 +79,8 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0
       '@trpc/server':
-        specifier: 11.0.0-rc.436
-        version: 11.0.0-rc.436
+        specifier: 11.0.0-rc.441
+        version: 11.0.0-rc.441
       joycon:
         specifier: ^3.1.1
         version: 3.1.1
@@ -113,8 +119,8 @@ importers:
         specifier: ^1.11.5
         version: 1.11.5
       '@trpc/server':
-        specifier: 11.0.0-rc.436
-        version: 11.0.0-rc.436
+        specifier: 11.0.0-rc.441
+        version: 11.0.0-rc.441
       hono:
         specifier: ^4.4.10
         version: 4.4.10
@@ -127,7 +133,7 @@ importers:
     devDependencies:
       '@hono/trpc-server':
         specifier: ^0.3.2
-        version: 0.3.2(@trpc/server@11.0.0-rc.436)(hono@4.4.10)
+        version: 0.3.2(@trpc/server@11.0.0-rc.441)(hono@4.4.10)
       '@types/node':
         specifier: ^20.11.17
         version: 20.14.9
@@ -1138,8 +1144,13 @@ packages:
   '@rushstack/ts-command-line@4.22.0':
     resolution: {integrity: sha512-Qj28t6MO3HRgAZ72FDeFsrpdE6wBWxF3VENgvrXh7JF2qIT+CrXiOJIesW80VFZB9QwObSpkB1ilx794fGQg6g==}
 
-  '@trpc/server@11.0.0-rc.436':
-    resolution: {integrity: sha512-Nm6b010lb6DuUQTnn95zU+IppD8YnSk/NCrpcj8o8umj9Ap07s1AOZLUfJaZzlDQltC2UVuLpH+shArryypBLg==}
+  '@trpc/client@11.0.0-rc.441':
+    resolution: {integrity: sha512-O9zHP7JcK35jO5G8BoW304WdRcHW1TKZae2QDU65KvfMxosbmqY2ajwAgs6CxTS45c1PuF9vI0kXtP52e3FYgQ==}
+    peerDependencies:
+      '@trpc/server': 11.0.0-rc.441+0c4a58144
+
+  '@trpc/server@11.0.0-rc.441':
+    resolution: {integrity: sha512-H0NN85JDgDlvG9tHW9efygLJZbVkszLagm5VeLD8MuhXqqKU+WyMTqb4D8rI560dse4dMC3lI5IoXaCEXMoznA==}
 
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
@@ -1447,6 +1458,10 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
 
   cosmiconfig@9.0.0:
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
@@ -1795,6 +1810,10 @@ packages:
   is-stream@2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
     engines: {node: '>=8'}
+
+  is-what@4.1.16:
+    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
+    engines: {node: '>=12.13'}
 
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
@@ -2280,6 +2299,10 @@ packages:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
+
+  superjson@2.2.1:
+    resolution: {integrity: sha512-8iGv75BYOa0xRJHK5vRLEjE2H/i4lulTjzpUXic3Eg8akftYjkmQDa8JARQ42rlczXyFR3IeRoeFCc7RxHsYZA==}
+    engines: {node: '>=16'}
 
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
@@ -2920,9 +2943,9 @@ snapshots:
 
   '@hono/node-server@1.12.0': {}
 
-  '@hono/trpc-server@0.3.2(@trpc/server@11.0.0-rc.436)(hono@4.4.10)':
+  '@hono/trpc-server@0.3.2(@trpc/server@11.0.0-rc.441)(hono@4.4.10)':
     dependencies:
-      '@trpc/server': 11.0.0-rc.436
+      '@trpc/server': 11.0.0-rc.441
       hono: 4.4.10
 
   '@humanwhocodes/config-array@0.11.14':
@@ -3420,7 +3443,11 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@trpc/server@11.0.0-rc.436': {}
+  '@trpc/client@11.0.0-rc.441(@trpc/server@11.0.0-rc.441)':
+    dependencies:
+      '@trpc/server': 11.0.0-rc.441
+
+  '@trpc/server@11.0.0-rc.441': {}
 
   '@types/argparse@1.0.38': {}
 
@@ -3751,6 +3778,10 @@ snapshots:
   consola@3.2.3: {}
 
   convert-source-map@2.0.0: {}
+
+  copy-anything@3.0.5:
+    dependencies:
+      is-what: 4.1.16
 
   cosmiconfig@9.0.0(typescript@5.5.3):
     dependencies:
@@ -4144,6 +4175,8 @@ snapshots:
   is-path-inside@3.0.3: {}
 
   is-stream@2.0.1: {}
+
+  is-what@4.1.16: {}
 
   isexe@2.0.0: {}
 
@@ -4560,6 +4593,10 @@ snapshots:
       mz: 2.7.0
       pirates: 4.0.6
       ts-interface-checker: 0.1.13
+
+  superjson@2.2.1:
+    dependencies:
+      copy-anything: 3.0.5
 
   supports-color@5.5.0:
     dependencies:

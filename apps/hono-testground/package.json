@@ -5,9 +5,9 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.11.5",
-    "@trpc/server": "11.0.0-rc.436",
-    "trpc-studio": "workspace:trpc-studio",
+    "@trpc/server": "11.0.0-rc.441",
     "hono": "^4.4.10",
+    "trpc-studio": "workspace:trpc-studio",
     "zod": "^3.23.8"
   },
   "devDependencies": {
