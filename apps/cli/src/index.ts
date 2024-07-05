@@ -27,7 +27,16 @@ export async function startStudio(args: Config) {
   const apiPath = hono.basePath('/api');
 
   apiPath.get('/procedures', c => {
-    return c.json(Array.from(procedureInfos.keys()));
+    // Return the list of procedures and their types
+    return c.json(
+      Object.fromEntries(
+        (function* () {
+          for (const [path, info] of procedureInfos.entries()) {
+            yield [path, info.type];
+          }
+        })()
+      )
+    );
   });
 
   apiPath.get('/procedures/:path', c => {

@@ -11,7 +11,7 @@ import { mapValues } from 'remeda';
 import consola from 'consola';
 
 type ValueAndMessage<V> = { value: V; message?: string };
-export interface SlimedResult {
+export interface SlimZodSchema {
   typeName:
     | Exclude<
         ZodFirstPartyTypeKind,
@@ -22,39 +22,39 @@ export interface SlimedResult {
   checks?: (ZodStringCheck | ZodNumberCheck | ZodBigIntCheck | ZodDateCheck)[]; // string, number, bigint, date
   coerce?: boolean; // string, number, bigint, boolean, date
 
-  type?: SlimedResult; // arrays
+  type?: SlimZodSchema; // arrays
   exactLength?: ValueAndMessage<number> | null; // array
   minLength?: ValueAndMessage<number> | null; // array, set
   maxLength?: ValueAndMessage<number> | null; // array, set
 
-  shape?: Record<string, SlimedResult>; // object
-  catchall?: SlimedResult; // object
+  shape?: Record<string, SlimZodSchema>; // object
+  catchall?: SlimZodSchema; // object
   unknownKeys?: UnknownKeysParam; // object
 
-  options?: SlimedResult[]; // union (discriminated union are not handled separately)
+  options?: SlimZodSchema[]; // union (discriminated union are not handled separately)
 
-  left?: SlimedResult; // intersection
-  right?: SlimedResult; // intersection
+  left?: SlimZodSchema; // intersection
+  right?: SlimZodSchema; // intersection
 
-  items?: SlimedResult[]; // tuple
-  rest?: SlimedResult; // tuple
+  items?: SlimZodSchema[]; // tuple
+  rest?: SlimZodSchema; // tuple
 
-  valueType?: SlimedResult; // record, map and set
-  keyType?: SlimedResult; // record, map
+  valueType?: SlimZodSchema; // record, map and set
+  keyType?: SlimZodSchema; // record, map
 
   value?: any; // literal
   values?: any[]; // enum (native enum is not handled separately)
 
-  schema?: SlimedResult; // effects (produced by .transform, .refine, .superRefine, .refinement)
+  schema?: SlimZodSchema; // effects (produced by .transform, .refine, .superRefine, .refinement)
 
-  innerType?: SlimedResult; // optional, nullable, default, catch, readonly
+  innerType?: SlimZodSchema; // optional, nullable, default, catch, readonly
   defaultValue?: any; // default
 
-  in?: SlimedResult; // pipeline? <-- I think this is the input schema that is part of request body
+  in?: SlimZodSchema; // pipeline? <-- I think this is the input schema that is part of request body
   // out?: SlimedResult; // pipeline? (not useful for us)
 }
 
-export function slimZod(schema: ZodFirstPartySchemaTypes): SlimedResult {
+export function slimZod(schema: ZodFirstPartySchemaTypes): SlimZodSchema {
   // Recursively get the metadata only
   const def = schema._def;
 
@@ -68,7 +68,7 @@ export function slimZod(schema: ZodFirstPartySchemaTypes): SlimedResult {
     return { typeName: 'StudioUnsupportedType' };
   }
 
-  const result: SlimedResult = { typeName: def.typeName };
+  const result: SlimZodSchema = { typeName: def.typeName };
 
   // Raw values
   if ('checks' in def) result.checks = def.checks;
