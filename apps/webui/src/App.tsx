@@ -4,6 +4,7 @@ import ResizeableContainer from './components/ResizeableContainer';
 import { getProcedures } from './api';
 import { useQuery } from '@tanstack/react-query';
 import { twMerge } from 'tailwind-merge';
+import { ProcedureExecutor } from './ProcedureExecutor';
 
 const procedureUi = {
   query: ['Q', 'badge-primary'],
@@ -14,13 +15,19 @@ const procedureUi = {
 interface ProcedureMenuItemProps {
   path: string;
   type: keyof typeof procedureUi;
+  onClick: () => void;
 }
 
-function ProcedureMenuItem({ path, type }: ProcedureMenuItemProps) {
+function ProcedureMenuItem({ path, type, onClick }: ProcedureMenuItemProps) {
   const [icon, color] = procedureUi[type];
   return (
     <li key={path} className={type === 'subscription' ? 'disabled' : ''}>
-      <a onClick={e => e.preventDefault()}>
+      <a
+        onClick={e => {
+          e.preventDefault();
+          onClick();
+        }}
+      >
         <span className={twMerge('badge inline', color)}>{icon}</span>
         {path}
       </a>
@@ -29,6 +36,9 @@ function ProcedureMenuItem({ path, type }: ProcedureMenuItemProps) {
 }
 
 function App() {
+  const [selectedPath, setSelectedPath] = useState<string | undefined>(
+    undefined
+  );
   const { data: procedures, isPending: isProcedurePending } = useQuery({
     queryKey: ['procedures'],
     queryFn: getProcedures,
@@ -47,11 +57,16 @@ function App() {
           ) : (
             <ul className='h-full w-full menu bg-base-200 overflow-clip'>
               {Object.entries(procedures)?.map(([path, type]) => (
-                <ProcedureMenuItem key={path} path={path} type={type} />
+                <ProcedureMenuItem
+                  key={path}
+                  path={path}
+                  type={type}
+                  onClick={() => setSelectedPath(path)}
+                />
               ))}
             </ul>
           )}
-          <div className='flex flex-col h-full'></div>
+          <ProcedureExecutor path={selectedPath} />
         </ResizeableContainer>
       </ThemeProvider>
     </div>
