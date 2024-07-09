@@ -83,8 +83,11 @@ type GetProcedureDetailsResponse = {
   outputInfo: SlimZodSchema;
 };
 
-export const getProcedure = async (path: string) => {
-  const response = await fetchThatThrowWhenNotOk(`/api/procedures/${path}`);
+export const getProcedure = async (path: string, signal?: AbortSignal) => {
+  const response = await fetchThatThrowWhenNotOk(
+    `/api/procedures/${path}`,
+    signal ? { signal } : undefined
+  );
   return (await response.json()) as GetProcedureDetailsResponse;
 };
 
@@ -104,7 +107,8 @@ type ExecuteProcedureResponse = {
 export const executeProcedure = async (
   path: string,
   method: 'query' | 'mutation',
-  data: unknown
+  data: unknown,
+  headers?: Record<string, string>
 ) => {
   const response = await fetchThatThrowWhenNotOk(
     `/api/procedures/${path}/execute`,
@@ -113,7 +117,7 @@ export const executeProcedure = async (
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ method, data }),
+      body: JSON.stringify({ method, headers, data }),
     }
   );
   return (await response.json()) as ExecuteProcedureResponse;

@@ -14,6 +14,7 @@ import {
   httpBatchLink,
   httpLink,
   loggerLink,
+  Operation,
   splitLink,
 } from '@trpc/client';
 
@@ -156,7 +157,19 @@ export function createClient(opts: createClientOptions) {
   const { url, transformer, useBatching, methodOverride } = opts;
   const linkOpts:
     | Parameters<typeof httpBatchLink>[0]
-    | Parameters<typeof httpLink>[0] = { url };
+    | Parameters<typeof httpLink>[0] = {
+    url,
+    headers: ({ op }: { op: Operation }) => {
+      const { context } = op;
+      if (
+        'studio-forward-header' in context &&
+        typeof context['studio-forward-header'] === 'object'
+      ) {
+        return context['studio-forward-header'] as Record<string, string>;
+      }
+      return {} as Record<string, string>;
+    },
+  };
 
   if (transformer) {
     // @ts-ignore - trpc is too tight, i hope it works :]

@@ -45,6 +45,7 @@ export async function startStudio(args: Config) {
 
   const executeSchema = z.object({
     data: z.unknown(),
+    headers: z.record(z.string()).optional(),
     method: z.enum(['query', 'mutation'], {
       message: 'Invalid method: only query or mutation allowed',
     }),
@@ -56,7 +57,13 @@ export async function startStudio(args: Config) {
       const body = json5.parse(await c.req.text());
       const input = executeSchema.parse(body);
       const start = Date.now();
-      const res = await trpc[input.method](path, input.data)
+      const res = await trpc[input.method](
+        path,
+        input.data,
+        input.headers
+          ? { context: { 'studio-forward-header': input.headers } }
+          : undefined
+      )
         .then(res => ({ success: true as const, data: res }))
         .catch(err => ({ success: false as const, error: err }));
       const end = Date.now();
