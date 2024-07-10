@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ThemeProvider } from './providers/theme';
-import ResizeableContainer from './components/ResizeableContainer';
+import SplitContainer from './components/SplitContainer';
 import { getProcedures } from './api';
 import { useQuery } from '@tanstack/react-query';
 import { twMerge } from 'tailwind-merge';
@@ -47,11 +47,7 @@ function App() {
   return (
     <div className='fixed inset-0'>
       <ThemeProvider>
-        <ResizeableContainer
-          defaultWidth='16rem'
-          maxWidth='24rem'
-          minWidth='8rem'
-        >
+        <SplitContainer defaultWidth='16rem' maxWidth='24rem' minWidth='8rem'>
           {isProcedurePending || !procedures ? (
             <div className='skeleton h-full w-full' />
           ) : (
@@ -67,7 +63,7 @@ function App() {
             </ul>
           )}
           <ProcedureExecutor path={selectedPath} />
-        </ResizeableContainer>
+        </SplitContainer>
       </ThemeProvider>
     </div>
   );

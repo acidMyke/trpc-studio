@@ -1,27 +1,32 @@
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, useRef, useState } from 'react';
 
-interface ResizeableContainerProps {
+interface SplitContainerProps {
   children: [React.ReactNode, React.ReactNode];
   defaultWidth?: number | string;
   maxWidth?: number | string;
   minWidth?: number | string;
 }
 
-export default function ResizeableContainer({
+export default function SplitContainer({
   children,
   defaultWidth = '50%',
   maxWidth = '100%',
   minWidth = '0',
-}: ResizeableContainerProps) {
+}: SplitContainerProps) {
+  const mainRef = useRef<HTMLDivElement>(null);
   const [leftPanelWidth, setLeftPanelWidth] = useState<number | string>(
     defaultWidth
   );
 
   const onMouseDown: MouseEventHandler<HTMLDivElement> = useCallback(e => {
     e.preventDefault();
-    setLeftPanelWidth(width => width ?? e.clientX);
+    const { current } = mainRef;
+    if (!current) return;
+    const mainStartX = current.getBoundingClientRect().left;
+    const mainWidth = current.clientWidth;
 
-    const onMouseMove = (e: MouseEvent) => setLeftPanelWidth(e.clientX);
+    const onMouseMove = (e: MouseEvent) =>
+      setLeftPanelWidth(((e.clientX - mainStartX) / mainWidth) * 100 + '%');
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener(
       'mouseup',
@@ -31,7 +36,7 @@ export default function ResizeableContainer({
   }, []);
 
   return (
-    <div className='flex flex-row h-full'>
+    <div ref={mainRef} className='flex flex-row h-full'>
       <div style={{ width: leftPanelWidth, maxWidth, minWidth }}>
         {children[0]}
       </div>

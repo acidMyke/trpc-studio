@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { executeProcedure, getProcedure } from './api';
-import ResizeableContainer from './components/ResizeableContainer';
+import SplitContainer from './components/SplitContainer';
 import TabContainer from './components/TabContainer';
 
 interface ProcedureExecutorProps {
@@ -17,7 +17,7 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
     mutationFn: data => executeProcedure(path, 'mutation', data),
   });
   return (
-    <ResizeableContainer minWidth='8rem' defaultWidth='40%'>
+    <SplitContainer minWidth='8rem' defaultWidth='40%'>
       {/* Request Headers and Body */}
       <TabContainer
         labelTitle='Request'
@@ -35,6 +35,6 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
         <div className='flex flex-col h-full' />
         <div className='flex flex-col h-full' />
       </TabContainer>
-    </ResizeableContainer>
+    </SplitContainer>
   );
 }
