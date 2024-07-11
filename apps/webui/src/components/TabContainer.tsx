@@ -39,9 +39,8 @@ export default function TabContainer<NumberOfTabs extends number>({
       <ul className='menu menu-horizontal'>
         {labelTitle && <h3 className='menu-title'>{labelTitle}</h3>}
         {label.map((tabLabel, index) => (
-          <li>
+          <li key={index}>
             <a
-              key={index}
               className={activeTab === index ? 'active' : ''}
               onClick={e => (e.preventDefault(), setActiveTab(index))}
             >
