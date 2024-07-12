@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useId, useState } from 'react';
 
 // FixedLengthArray is a utility type that creates a fixed-length array type
 // Modified from sindresorhus/type-fest
@@ -22,34 +22,49 @@ interface TabContainerProps<NumberOfTabs extends number> {
   label: FixedLengthArray<NumberOfTabs, string>;
   labelTitle?: string;
   defaultTab?: number;
-  className?: string;
 }
 
 export default function TabContainer<NumberOfTabs extends number>({
   children,
   label,
   labelTitle,
-  className,
   defaultTab = 0,
 }: TabContainerProps<NumberOfTabs>) {
-  const [activeTab, setActiveTab] = useState(defaultTab);
-
+  const name = useId();
   return (
-    <div className={className}>
-      <ul className='menu menu-horizontal'>
-        {labelTitle && <h3 className='menu-title'>{labelTitle}</h3>}
-        {label.map((tabLabel, index) => (
-          <li key={index}>
-            <a
-              className={activeTab === index ? 'active' : ''}
-              onClick={e => (e.preventDefault(), setActiveTab(index))}
+    <div role='tablist' className='tabs tabs-lifted w-full'>
+      {labelTitle && (
+        <input
+          key='title'
+          type='radio'
+          name={name}
+          role='tab'
+          className='tab !cursor-default'
+          aria-label={labelTitle}
+          disabled
+        />
+      )}
+      {label.map((tabLabel, index) => {
+        return (
+          <>
+            <input
+              key={index}
+              type='radio'
+              name={name}
+              role='tab'
+              className='tab'
+              aria-label={tabLabel}
+              defaultChecked={defaultTab === index}
+            />
+            <div
+              role='tabpanel'
+              className='tab-content bg-base-100 border-base-300 rounded-box p-3'
             >
-              {tabLabel}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div>{children[activeTab]}</div>
+              {children[index]}
+            </div>
+          </>
+        );
+      })}
     </div>
   );
 }
