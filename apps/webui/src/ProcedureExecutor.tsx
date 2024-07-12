@@ -135,30 +135,44 @@ function HeaderNameValue({
   append,
   remove,
 }: HeaderNameValueProps) {
-  const enabledRef = useRef<HTMLInputElement>(null);
-  const nameRef = useRef<HTMLInputElement>(null);
-  const valueRef = useRef<HTMLInputElement>(null);
+  const enabledRef = useRef<HTMLInputElement | null>(null);
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const valueRef = useRef<HTMLInputElement | null>(null);
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(
+        'onChange',
+        enabledRef.current,
+        nameRef.current,
+        valueRef.current
+      );
       if (nameRef.current?.value === '' && valueRef.current?.value === '') {
         remove(index);
       } else if (index === length - 1 && e.target.value !== '') {
         append({ name: '', value: '', enabled: false }, { shouldFocus: false });
-        enabledRef.current?.setAttribute('checked', 'true');
+        if (enabledRef.current) enabledRef.current.checked = true;
       }
     },
     [append, index, length, remove]
   );
 
   return (
-    <div className='flex items-center gap-x-2 hover:bg-base-200'>
+    <div
+      className='flex items-center gap-x-2 hover:bg-base-200'
+      ref={ref => {
+        // Using parent ref to get child refs because ref for inputs are set by react-hook-form
+        enabledRef.current = ref?.firstChild as HTMLInputElement;
+        nameRef.current = ref?.children[1] as HTMLInputElement;
+        valueRef.current = ref?.children[2] as HTMLInputElement;
+      }}
+    >
       <input
         className='checkbox checkbox-sm'
         type='checkbox'
         {...register(`headers.${index}.enabled` as const)}
         disabled={index === length - 1}
-        ref={enabledRef}
+        // ref={enabledRef}
       />
       <input
         className='input input-sm input-ghost flex-grow'
@@ -166,7 +180,7 @@ function HeaderNameValue({
         {...register(`headers.${index}.name` as const)}
         placeholder='name'
         onChange={onChange}
-        ref={nameRef}
+        // ref={nameRef}
       />
       <input
         className='input input-sm input-ghost flex-grow-[3]'
@@ -174,7 +188,7 @@ function HeaderNameValue({
         {...register(`headers.${index}.value` as const)}
         placeholder='value'
         onChange={onChange}
-        ref={valueRef}
+        // ref={valueRef}
       />
       <button
         type='button'
