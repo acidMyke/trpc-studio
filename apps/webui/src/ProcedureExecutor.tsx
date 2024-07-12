@@ -78,8 +78,8 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
         )}
       </div>
       <SplitContainer
-        minWidth='28rem'
-        maxWidth='calc(100% - 28rem)'
+        minWidth='32rem'
+        maxWidth='calc(100% - 32rem)'
         defaultWidth='40%'
       >
         {/* Header */}
