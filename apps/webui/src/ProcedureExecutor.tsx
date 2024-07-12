@@ -3,6 +3,7 @@ import { executeProcedure, getProcedure } from './api';
 import SplitContainer from './components/SplitContainer';
 import TabContainer from './components/TabContainer';
 import {
+  SubmitHandler,
   useFieldArray,
   UseFieldArrayAppend,
   UseFieldArrayRemove,
@@ -16,97 +17,105 @@ interface ProcedureExecutorProps {
   path?: string;
 }
 
-export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
-  const { data: procedures, isPending: isProcedurePending } = useQuery({
-    queryKey: ['procedure', path],
-    queryFn: ({ queryKey: [, path], signal }) => getProcedure(path!, signal),
-  });
-  const { data: response } = useMutation({
-    mutationKey: ['procedure-execute', path],
-    mutationFn: data => executeProcedure(path, 'mutation', data),
-  });
-
-  return (
-    <SplitContainer
-      minWidth='28rem'
-      maxWidth='calc(100% - 28rem)'
-      defaultWidth='40%'
-    >
-      {/* Request Headers and Body */}
-      <TabContainer
-        labelTitle='Request'
-        defaultTab={1}
-        label={['Headers', 'Input']}
-      >
-        <div className='flex flex-col h-full'>
-          {/* Key value form for headers */}
-          <HeaderForm
-            headers={[]}
-            setHeaders={() => {
-              // do nothing
-            }}
-          />
-        </div>
-        <div className='flex flex-col h-full' />
-      </TabContainer>
-      <TabContainer
-        labelTitle='Response'
-        defaultTab={1}
-        label={['Headers', 'Output']}
-      >
-        <div className='flex flex-col h-full' />
-        <div className='flex flex-col h-full' />
-      </TabContainer>
-    </SplitContainer>
-  );
-}
-
-type Header = {
+interface Header {
   name: string;
   value: string;
   enabled: boolean;
-};
-interface HeaderFormProps {
-  headers: Header[];
-  setHeaders: (headers: Header[]) => void;
 }
 
-function HeaderForm({ headers, setHeaders }: HeaderFormProps) {
-  const { control, register, handleSubmit } = useForm<{ headers: Header[] }>({
+interface FormInputs {
+  headers: Header[];
+}
+
+export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
+  const { data: procedure, isPending: isProcedurePending } = useQuery({
+    queryKey: ['procedure', path],
+    queryFn: ({ queryKey: [, path], signal }) => getProcedure(path!, signal),
+    enabled: !!path,
+  });
+  // const { data: response } = useMutation({
+  //   mutationKey: ['procedure-execute', path],
+  //   mutationFn: data => executeProcedure(path, 'mutation', data),
+  // });
+
+  const { control, register, handleSubmit } = useForm<FormInputs>({
     defaultValues: {
-      headers: headers.length
-        ? headers
-        : [{ name: '', value: '', enabled: false }],
+      headers: [{ name: '', value: '', enabled: false }],
     },
   });
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'headers',
   });
 
-  const onSubmit = ({ headers }: { headers: Header[] }) => {
-    setHeaders(headers);
+  const onSubmit: SubmitHandler<FormInputs> = data => {
+    console.log(data);
   };
 
   return (
     <form
-      className='flex flex-col gapy-2'
+      className='flex flex-col h-full'
       autoComplete='off'
+      spellCheck={false}
       onSubmit={handleSubmit(onSubmit)}
     >
-      {/* Each row with header name and header value input field */}
-      {fields.map((field, index) => {
-        return (
-          <HeaderNameValue
-            key={field.id}
-            index={index}
-            length={fields.length}
-            register={register}
-            append={append}
-            remove={remove}
-          />
-        );
-      })}
+      {/* Header and execute button */}
+      <div className='my-4 flex items-center gap-x-2 px-6'>
+        {!path ? (
+          <p className='text-lg text-base-content'>
+            Select a procedure to execute
+          </p>
+        ) : isProcedurePending ? (
+          <div className='skeleton h-8 flex-1' />
+        ) : (
+          <>
+            <h2 className='text-lg text-base-content flex-1'>{path}</h2>
+            <button type='submit' className='btn btn-success btn-sm'>
+              {procedure?.type === 'query' ? 'Use Query' : 'Use Mutation'}
+            </button>
+          </>
+        )}
+      </div>
+      <SplitContainer
+        minWidth='28rem'
+        maxWidth='calc(100% - 28rem)'
+        defaultWidth='40%'
+      >
+        {/* Header */}
+        {/* Request Headers and Body */}
+
+        <TabContainer
+          labelTitle='Request'
+          defaultTab={1}
+          label={['Headers', 'Input']}
+        >
+          {/* Key value form for headers */}
+          <div className='flex flex-col h-full gap-y-1'>
+            {fields.map((field, index) => {
+              return (
+                <HeaderNameValue
+                  key={field.id}
+                  index={index}
+                  length={fields.length}
+                  register={register}
+                  append={append}
+                  remove={remove}
+                />
+              );
+            })}
+          </div>
+          <div className='flex flex-col h-full' />
+        </TabContainer>
+        <TabContainer
+          labelTitle='Response'
+          defaultTab={1}
+          label={['Headers', 'Output']}
+        >
+          <div className='flex flex-col h-full' />
+          <div className='flex flex-col h-full' />
+        </TabContainer>
+      </SplitContainer>
     </form>
   );
 }
