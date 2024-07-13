@@ -124,6 +124,9 @@ importers:
       hono:
         specifier: ^4.4.10
         version: 4.4.10
+      superjson:
+        specifier: ^2.2.1
+        version: 2.2.1
       trpc-studio:
         specifier: workspace:trpc-studio
         version: link:../cli
