@@ -1,4 +1,9 @@
-import { createClient, extractInfo, findAppRouter } from './utils/trpc';
+import {
+  createClient,
+  extractInfo,
+  findAppRouter,
+  isDefaultTransformer,
+} from './utils/trpc';
 import { Config } from './config';
 import consola from 'consola';
 import { Hono } from 'hono';
@@ -18,13 +23,20 @@ export async function startStudio(args: Config) {
     procedureInfos.set(path, extractInfo(path, procedure));
   }
   consola.info(`Found ${procedureInfos.size} procedures`);
+  const isDefT = isDefaultTransformer(appRouter);
+  if (isDefT) {
+    consola.warn(
+      'Detected default transformer, Date, Map, Set or BigInt inputs will not be supported'
+    );
+  }
   // tRPC Client to communicate with the server
-  const trpc = createClient({ url: args.trpcEndpoint });
-
+  const trpc = createClient({ url: args.trpcEndpoint, appRouter });
   //Start Hono Server
   const hono = new Hono();
 
   const apiPath = hono.basePath('/api');
+
+  // TODO: Add a way to get the if the router is using the default transformer that doesn't support Date, Map, Set or BigInt
 
   apiPath.get('/procedures', c => {
     // Return the list of procedures and their types

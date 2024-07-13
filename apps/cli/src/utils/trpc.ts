@@ -4,8 +4,8 @@ import type {
   AnyRootTypes,
   ProcedureType,
   RouterRecord,
-  DataTransformerOptions,
 } from '@trpc/server/unstable-core-do-not-import';
+import { defaultTransformer } from '@trpc/server/unstable-core-do-not-import';
 import consola from 'consola';
 import { AnyZodObject, ZodFirstPartySchemaTypes, ZodType, z } from 'zod';
 import { slimZod } from './zod';
@@ -148,13 +148,13 @@ function isTRPCRouter(router: any): router is AppRouter {
 
 interface createClientOptions {
   url: string;
-  transformer?: DataTransformerOptions;
   useBatching?: boolean;
   methodOverride?: boolean;
+  appRouter: AppRouter;
 }
 
 export function createClient(opts: createClientOptions) {
-  const { url, transformer, useBatching, methodOverride } = opts;
+  const { url, appRouter, useBatching, methodOverride } = opts;
   const linkOpts:
     | Parameters<typeof httpBatchLink>[0]
     | Parameters<typeof httpLink>[0] = {
@@ -171,10 +171,9 @@ export function createClient(opts: createClientOptions) {
     },
   };
 
-  if (transformer) {
-    // @ts-ignore - trpc is too tight, i hope it works :]
-    linkOpts.transformer = transformer;
-  }
+  // Steal the transformer from the appRouter so that we can use it in the client
+  // @ts-ignore - trpc is too tight, i hope it works :]
+  linkOpts.transformer = appRouter._def._config.transformer;
 
   if (methodOverride) {
     linkOpts.methodOverride = 'POST';
@@ -192,4 +191,8 @@ export function createClient(opts: createClientOptions) {
       }),
     ],
   });
+}
+
+export function isDefaultTransformer(appRouter: AppRouter): boolean {
+  return appRouter._def._config.transformer === defaultTransformer;
 }
