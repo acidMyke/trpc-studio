@@ -12,6 +12,7 @@ import { z } from 'zod';
 import { TRPCClientError } from '@trpc/client';
 import json5 from 'json5';
 import { StatusCode } from 'hono/utils/http-status';
+import superjson, { type SuperJSONResult } from 'superjson';
 
 export async function startStudio(args: Config) {
   const { routerPath } = args;
@@ -68,6 +69,15 @@ export async function startStudio(args: Config) {
     try {
       const body = json5.parse(await c.req.text());
       const input = executeSchema.parse(body);
+      if (
+        input.data &&
+        typeof input.data === 'object' &&
+        'meta' in input.data &&
+        'json' in input.data
+      ) {
+        // Superjson data input detected
+        input.data = superjson.deserialize(input.data as SuperJSONResult);
+      }
       const start = Date.now();
       const res = await trpc[input.method](
         path,
