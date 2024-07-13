@@ -9,6 +9,7 @@ import {
   UseFieldArrayRemove,
   useForm,
   UseFormRegister,
+  UseFormSetFocus,
 } from 'react-hook-form';
 import { useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
@@ -38,7 +39,7 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
   //   mutationFn: data => executeProcedure(path, 'mutation', data),
   // });
 
-  const { control, register, handleSubmit } = useForm<FormInputs>({
+  const { control, register, handleSubmit, setFocus } = useForm<FormInputs>({
     defaultValues: {
       headers: [{ name: '', value: '', enabled: false }],
     },
@@ -101,6 +102,7 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
                   register={register}
                   append={append}
                   remove={remove}
+                  setFocus={setFocus}
                 />
               );
             })}
@@ -123,9 +125,10 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
 interface HeaderNameValueProps {
   index: number;
   length: number;
-  register: UseFormRegister<{ headers: Header[] }>;
-  append: UseFieldArrayAppend<{ headers: Header[] }>;
+  register: UseFormRegister<FormInputs>;
+  append: UseFieldArrayAppend<FormInputs>;
   remove: UseFieldArrayRemove;
+  setFocus: UseFormSetFocus<FormInputs>;
 }
 
 function HeaderNameValue({
@@ -134,6 +137,7 @@ function HeaderNameValue({
   register,
   append,
   remove,
+  setFocus,
 }: HeaderNameValueProps) {
   const enabledRef = useRef<HTMLInputElement | null>(null);
   const nameRef = useRef<HTMLInputElement | null>(null);
@@ -141,14 +145,9 @@ function HeaderNameValue({
 
   const onChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(
-        'onChange',
-        enabledRef.current,
-        nameRef.current,
-        valueRef.current
-      );
       if (nameRef.current?.value === '' && valueRef.current?.value === '') {
         remove(index);
+        setFocus(index > 0 ? `headers.${index - 1}.value` : 'headers.0.value');
       } else if (index === length - 1 && e.target.value !== '') {
         append({ name: '', value: '', enabled: false }, { shouldFocus: false });
         if (enabledRef.current) enabledRef.current.checked = true;
