@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { executeProcedure, getProcedure } from './api';
+import { useQuery } from '@tanstack/react-query';
+import { getInfo } from './api';
 import SplitContainer from './components/SplitContainer';
 import TabContainer from './components/TabContainer';
 import {
@@ -11,12 +11,9 @@ import {
   UseFormRegister,
   UseFormSetFocus,
 } from 'react-hook-form';
-import { useCallback, useRef } from 'react';
-import { X } from 'lucide-react';
-
-interface ProcedureExecutorProps {
-  path?: string;
-}
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { X, CircleAlert } from 'lucide-react';
+import { Combobox } from './components/Combobox';
 
 interface Header {
   name: string;
@@ -28,12 +25,41 @@ interface FormInputs {
   headers: Header[];
 }
 
-export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
-  const { data: procedure, isPending: isProcedurePending } = useQuery({
-    queryKey: ['procedure', path],
-    queryFn: ({ queryKey: [, path], signal }) => getProcedure(path!, signal),
-    enabled: !!path,
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function ProcedureExecutor() {
+  const {
+    data: info,
+    isLoading: isListLoading,
+    isError: isListErrored,
+  } = useQuery({
+    queryKey: ['procedures'],
+    queryFn: getInfo,
   });
+
+  const prodcedureOptions = useMemo(() => {
+    if (!info) return [] as { label: string; value: string }[];
+    const opts: { label: string; value: string }[] = [];
+    for (const [path, type] of Object.entries(info.procedures)) {
+      if (type === 'subscription') continue; // Skip subscriptions for now
+      opts.push({
+        label: capitalizeFirstLetter(type) + ': ' + path,
+        value: path,
+      });
+    }
+    return opts;
+  }, [info]);
+
+  const [selectedPath, setSelectedPath] = useState<string | undefined>(
+    undefined
+  );
+  // const { data: procedureData, isLoading: isProcedureDataLoading } = useQuery({
+  //   queryKey: ['procedure', selectedPath],
+  //   queryFn: ({ queryKey: [, path], signal }) => getProcedure(path!, signal),
+  //   enabled: !!selectedPath,
+  // });
   // const { data: response } = useMutation({
   //   mutationKey: ['procedure-execute', path],
   //   mutationFn: data => executeProcedure(path, 'mutation', data),
@@ -62,22 +88,33 @@ export function ProcedureExecutor({ path }: ProcedureExecutorProps) {
       onSubmit={handleSubmit(onSubmit)}
     >
       {/* Header and execute button */}
-      <div className='my-4 flex items-center gap-x-2 px-6'>
-        {!path ? (
-          <p className='text-lg text-base-content'>
-            Select a procedure to execute
-          </p>
-        ) : isProcedurePending ? (
-          <div className='skeleton h-8 flex-1' />
-        ) : (
-          <>
-            <h2 className='text-lg text-base-content flex-1'>{path}</h2>
-            <button type='submit' className='btn btn-success btn-sm'>
-              {procedure?.type === 'query' ? 'Use Query' : 'Use Mutation'}
-            </button>
-          </>
-        )}
-      </div>
+      {isListErrored ? (
+        <div role='alert' className='alert alert-error flex-1 my-4 mx-6'>
+          <CircleAlert size={16} />
+          <span>Error fetching procedures</span>
+        </div>
+      ) : isListLoading ? (
+        <div className='skeleton h-8 my-4 mx-6' />
+      ) : (
+        <div className='my-4 flex items-center gap-x-2 px-6'>
+          <Combobox
+            options={prodcedureOptions}
+            value={selectedPath}
+            onChange={setSelectedPath}
+            placeholder='Select a procedure'
+            className='flex-1'
+          />
+          <button
+            type='submit'
+            className='btn btn-primary btn-sm'
+            disabled={!selectedPath}
+          >
+            {selectedPath
+              ? `Use ${capitalizeFirstLetter(info?.procedures[selectedPath!]!)}`
+              : 'Execute'}
+          </button>
+        </div>
+      )}
       <SplitContainer
         minWidth='32rem'
         maxWidth='calc(100% - 32rem)'
