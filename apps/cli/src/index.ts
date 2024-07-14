@@ -19,9 +19,11 @@ export async function startStudio(args: Config) {
   // Find the app router in the file
   const appRouter = await findAppRouter(routerPath);
   const procedureInfos: Map<string, ReturnType<typeof extractInfo>> = new Map();
+  const proceduresType: Record<string, string> = {};
   for (const path in appRouter._def.procedures) {
     const procedure = appRouter._def.procedures[path];
     procedureInfos.set(path, extractInfo(path, procedure));
+    proceduresType[path] = procedure._def.type;
   }
   consola.info(`Found ${procedureInfos.size} procedures`);
   const isDefT = isDefaultTransformer(appRouter);
@@ -37,19 +39,12 @@ export async function startStudio(args: Config) {
 
   const apiPath = hono.basePath('/api');
 
-  // TODO: Add a way to get the if the router is using the default transformer that doesn't support Date, Map, Set or BigInt
-
-  apiPath.get('/procedures', c => {
-    // Return the list of procedures and their types
-    return c.json(
-      Object.fromEntries(
-        (function* () {
-          for (const [path, info] of procedureInfos.entries()) {
-            yield [path, info.type];
-          }
-        })()
-      )
-    );
+  //A way to get the if the router is using the default transformer that doesn't support Date, Map, Set or BigInt
+  apiPath.get('/info', c => {
+    return c.json({
+      procedures: proceduresType,
+      isDefaultTransformer: isDefT,
+    });
   });
 
   apiPath.get('/procedures/:path', c => {
