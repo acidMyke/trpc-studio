@@ -18,14 +18,14 @@ export const fetchThatThrowWhenNotOk = async (
   return response;
 };
 
-type GetProceduresResponse = Record<
-  string,
-  'query' | 'mutation' | 'subscription'
->;
+type GetInfoResponse = {
+  procedures: Record<string, 'query' | 'mutation' | 'subscription'>;
+  isDefaultTransformer: boolean;
+};
 
-export const getProcedures = async () => {
-  const response = await fetchThatThrowWhenNotOk('/api/procedures');
-  return (await response.json()) as GetProceduresResponse;
+export const getInfo = async () => {
+  const response = await fetchThatThrowWhenNotOk('/api/info');
+  return (await response.json()) as GetInfoResponse;
 };
 
 // Copied from apps/cli/src/utils/zod.ts
