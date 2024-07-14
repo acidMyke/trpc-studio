@@ -41,9 +41,6 @@ importers:
       remeda:
         specifier: ^2.3.0
         version: 2.3.0
-      superjson:
-        specifier: ^2.2.1
-        version: 2.2.1
       yargs:
         specifier: ^17.7.2
         version: 17.7.2

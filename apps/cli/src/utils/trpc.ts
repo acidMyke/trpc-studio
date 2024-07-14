@@ -154,7 +154,7 @@ interface createClientOptions {
 }
 
 export function createClient(opts: createClientOptions) {
-  const { url, appRouter, useBatching, methodOverride } = opts;
+  const { url, useBatching, methodOverride } = opts;
   const linkOpts:
     | Parameters<typeof httpBatchLink>[0]
     | Parameters<typeof httpLink>[0] = {
@@ -170,10 +170,6 @@ export function createClient(opts: createClientOptions) {
       return {} as Record<string, string>;
     },
   };
-
-  // Steal the transformer from the appRouter so that we can use it in the client
-  // @ts-ignore - trpc is too tight, i hope it works :]
-  linkOpts.transformer = appRouter._def._config.transformer;
 
   if (methodOverride) {
     linkOpts.methodOverride = 'POST';
